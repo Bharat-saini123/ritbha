@@ -12,6 +12,7 @@ type PortfolioItem = {
   description: string;
   stack: string[];
   image: string;
+  liveUrl?: string | null;
   order: number;
 };
 
@@ -67,6 +68,27 @@ export default function Portfolio({ portfolio }: { portfolio: PortfolioItem[] })
                     </span>
                   ))}
                 </div>
+
+                {/* Live site link */}
+                {p.liveUrl && (
+                  <a
+                    href={p.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/5 px-4 py-2 text-xs font-medium text-accent transition-all duration-200 hover:bg-accent hover:text-bg"
+                  >
+                    <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M2 10L10 2M10 2H5M10 2V7"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    View live site
+                  </a>
+                )}
               </div>
             </article>
           ))}

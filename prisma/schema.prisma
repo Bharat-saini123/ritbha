@@ -39,6 +39,7 @@ model PortfolioItem {
   description String
   stack       String[]
   image       String
+  liveUrl     String?
   order       Int      @default(0)
 }
 
