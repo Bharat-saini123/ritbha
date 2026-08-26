@@ -8,7 +8,7 @@ export const brand = {
   description:
     "A full-stack web studio that plants your product idea, engineers it properly, and grows it into something that scales.",
   founder: "Bharat Saini",
-  email: "hello@ritbha.com",
+  email: "sainibharat277@gmail.com",
   phone: "+91 8570915006",
   whatsapp: "+91 8570915006",
   location: "Narnaul, Haryana, India",
