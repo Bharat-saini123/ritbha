@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SkillCategory {
+  id     String  @id @default(cuid())
+  label  String
+  icon   String
+  order  Int     @default(0)
+  skills Skill[]
+}
+
+model Skill {
+  id         String        @id @default(cuid())
+  name       String
+  category   SkillCategory @relation(fields: [categoryId], references: [id])
+  categoryId String
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  price       String
+  description String
+  features    String[]
+  order       Int      @default(0)
+}
+
+model PortfolioItem {
+  id          String   @id @default(cuid())
+  index       String
+  title       String
+  category    String
+  description String
+  stack       String[]
+  image       String
+  order       Int      @default(0)
+}
+
+model Testimonial {
+  id      String @id @default(cuid())
+  name    String
+  role    String
+  company String
+  quote   String
+  order   Int    @default(0)
+}
+
+model ContactMessage {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  projectType String?
+  budget      String?
+  message     String
+  createdAt   DateTime @default(now())
+}

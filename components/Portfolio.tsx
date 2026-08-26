@@ -1,0 +1,66 @@
+type PortfolioItem = {
+  id: string;
+  index: string;
+  title: string;
+  category: string;
+  description: string;
+  stack: string[];
+  image: string;
+  order: number;
+};
+
+export default function Portfolio({ portfolio }: { portfolio: PortfolioItem[] }) {
+  return (
+    <section id="portfolio" className="border-b border-line">
+      <div className="mx-auto max-w-wrap px-6 py-24">
+        <p className="eyebrow">Portfolio</p>
+        <h2 className="mt-3 max-w-xl font-display text-3xl leading-tight md:text-4xl">
+          Concept builds that show the range.
+        </h2>
+        <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted">
+          Ritbha is a new studio — these are example builds standing in for real client work
+          while the first projects ship.
+        </p>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 [perspective:1400px]">
+          {portfolio.map((p) => (
+            <article
+              key={p.title}
+              className="group relative overflow-hidden rounded-2xl border border-line bg-surface/50 transition-transform duration-300 [transform-style:preserve-3d] hover:-translate-y-1 hover:[transform:rotateX(4deg)_rotateY(-4deg)]"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.image}
+                  alt={`${p.title} — ${p.category}`}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/10 to-transparent" />
+                <span className="absolute left-4 top-4 rounded-full border border-line bg-bg/70 px-3 py-1 font-mono text-[11px] text-accent backdrop-blur">
+                  {p.index}
+                </span>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-lg">{p.title}</h3>
+                  <span className="text-[11px] text-muted">{p.category}</span>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{p.description}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {p.stack.map((s) => (
+                    <span key={s} className="font-mono text-[11px] text-muted/80">
+                      {s}
+                      <span className="text-muted/40"> · </span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
