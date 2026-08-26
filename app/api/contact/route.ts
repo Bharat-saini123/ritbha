@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendContactAlert } from "@/lib/mailer";
+import { sendContactAlert, sendConfirmationEmail } from "@/lib/mailer";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -27,17 +27,20 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── 2. Send notification email ─────────────────────────────────────────────
+  // ── 2. Send emails ────────────────────────────────────────────────────────
   if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
-    try {
-      await sendContactAlert({ name, email, projectType, budget, message });
-    } catch (err) {
-      // Email failure is non-fatal — log it but still return success to the
-      // client so they don't re-submit and create duplicate leads.
-      console.error("[contact] email notification failed:", err);
-    }
+    const emailPayload = { name, email, projectType, budget, message };
+    // Run both in parallel; one failure won't block the other
+    const [alertResult, confirmResult] = await Promise.allSettled([
+      sendContactAlert(emailPayload),
+      sendConfirmationEmail(emailPayload),
+    ]);
+    if (alertResult.status === "rejected")
+      console.error("[contact] alert email failed:", alertResult.reason);
+    if (confirmResult.status === "rejected")
+      console.error("[contact] confirmation email failed:", confirmResult.reason);
   } else {
-    console.warn("[contact] GMAIL_USER / GMAIL_PASS not set — email skipped.");
+    console.warn("[contact] GMAIL_USER / GMAIL_PASS not set — emails skipped.");
   }
 
   return NextResponse.json({ ok: true, persisted: !!savedId, id: savedId });
