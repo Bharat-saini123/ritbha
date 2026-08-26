@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 ::selection {
-  background: #c9f169;
-  color: #0e2118;
+  background: #818cf8;
+  color: #0B0F1A;
 }
 
 html {
@@ -12,15 +12,13 @@ html {
 }
 
 body {
-  background-image: radial-gradient(
-    circle at 50% 0%,
-    rgba(201, 241, 105, 0.06),
-    transparent 55%
-  );
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(129,140,248,0.12), transparent 50%),
+    radial-gradient(ellipse at 80% 10%, rgba(192,132,252,0.08), transparent 50%);
 }
 
 :focus-visible {
-  outline: 2px solid #c9f169;
+  outline: 2px solid #818cf8;
   outline-offset: 3px;
 }
 
@@ -40,16 +38,66 @@ body {
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #c9f169;
+  color: #818cf8;
 }
 
+/* ── Hero rings ──────────────────────────────────────────────────────────── */
 .ring-field {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 1px solid rgba(201, 241, 105, 0.16);
+  border: 1px solid rgba(129,140,248,0.18);
 }
 
+/* ── Grain overlay ───────────────────────────────────────────────────────── */
 .grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* ── 3D contact section orbit animation ─────────────────────────────────── */
+@keyframes orbit-slow {
+  from { transform: rotateZ(0deg)   rotateX(60deg); }
+  to   { transform: rotateZ(360deg) rotateX(60deg); }
+}
+@keyframes orbit-med {
+  from { transform: rotateZ(120deg) rotateX(55deg); }
+  to   { transform: rotateZ(480deg) rotateX(55deg); }
+}
+@keyframes orbit-fast {
+  from { transform: rotateZ(240deg) rotateX(50deg); }
+  to   { transform: rotateZ(600deg) rotateX(50deg); }
+}
+@keyframes blob-drift {
+  0%,100% { transform: translate(0,0)    scale(1); }
+  33%      { transform: translate(30px,-20px) scale(1.05); }
+  66%      { transform: translate(-20px,15px) scale(0.97); }
+}
+
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  transform-style: preserve-3d;
+}
+.orbit-ring-1 {
+  inset: 0%;
+  border-color: rgba(129,140,248,0.30);
+  animation: orbit-slow  18s linear infinite;
+}
+.orbit-ring-2 {
+  inset: 10%;
+  border-color: rgba(192,132,252,0.22);
+  animation: orbit-med   13s linear infinite reverse;
+}
+.orbit-ring-3 {
+  inset: 20%;
+  border-color: rgba(129,140,248,0.18);
+  animation: orbit-fast  9s  linear infinite;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: blob-drift 12s ease-in-out infinite;
 }

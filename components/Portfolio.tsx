@@ -1,3 +1,9 @@
+"use client";
+
+import { useState } from "react";
+
+const INITIAL_COUNT = 6;
+
 type PortfolioItem = {
   id: string;
   index: string;
@@ -10,6 +16,11 @@ type PortfolioItem = {
 };
 
 export default function Portfolio({ portfolio }: { portfolio: PortfolioItem[] }) {
+  const [showAll, setShowAll] = useState(false);
+
+  const visible = showAll ? portfolio : portfolio.slice(0, INITIAL_COUNT);
+  const hasMore = portfolio.length > INITIAL_COUNT;
+
   return (
     <section id="portfolio" className="border-b border-line">
       <div className="mx-auto max-w-wrap px-6 py-24">
@@ -23,7 +34,7 @@ export default function Portfolio({ portfolio }: { portfolio: PortfolioItem[] })
         </p>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 [perspective:1400px]">
-          {portfolio.map((p) => (
+          {visible.map((p) => (
             <article
               key={p.title}
               className="group relative overflow-hidden rounded-2xl border border-line bg-surface/50 transition-transform duration-300 [transform-style:preserve-3d] hover:-translate-y-1 hover:[transform:rotateX(4deg)_rotateY(-4deg)]"
@@ -60,6 +71,30 @@ export default function Portfolio({ portfolio }: { portfolio: PortfolioItem[] })
             </article>
           ))}
         </div>
+
+        {/* Show more / less button */}
+        {hasMore && (
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={() => setShowAll((v) => !v)}
+              className="group flex items-center gap-3 rounded-full border border-line px-8 py-3 text-sm text-muted transition-all duration-300 hover:border-accent/50 hover:text-ink"
+            >
+              {showAll ? (
+                <>
+                  <span>Show less</span>
+                  <span className="transition-transform duration-300 group-hover:-translate-y-0.5">↑</span>
+                </>
+              ) : (
+                <>
+                  <span>
+                    View all {portfolio.length} projects
+                  </span>
+                  <span className="transition-transform duration-300 group-hover:translate-y-0.5">↓</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

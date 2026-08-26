@@ -39,51 +39,52 @@ const services = [
     title: "Business Website",
     price: "Starts at ₹6,999",
     description:
-      "A fast, mobile-friendly website for a shop, clinic, studio or local business.",
+      "A fast, mobile-friendly website for a shop, clinic, studio or local business — pages, forms, and a clean CMS-free setup.",
     features: [
-      "Custom design",
-      "Mobile responsive",
+      "Up to 5 pages",
       "Contact form",
-      "SEO ready",
+      "Mobile-first design",
+      "Basic SEO setup",
     ],
   },
   {
     title: "E-commerce Store",
     price: "Starts at ₹15,999",
     description:
-      "A storefront with product catalog, cart, checkout and an admin view.",
+      "A storefront you can actually run — product catalog, cart, checkout, and an admin view to manage orders.",
     features: [
-      "Product catalog",
-      "Cart & checkout",
-      "Payment gateway",
-      "Admin dashboard",
+      "Product catalog & cart",
+      "Payment gateway integration",
+      "Order dashboard",
+      "Postgres-backed inventory",
     ],
   },
   {
     title: "Custom Web App",
     price: "Starts at ₹29,999",
     description:
-      "Dashboards, CRMs, booking systems, internal tools with real logic and a database.",
+      "Dashboards, CRMs, booking systems, internal tools — anything with real logic, accounts and a database behind it.",
     features: [
-      "Custom logic",
-      "Database design",
-      "Auth & roles",
+      "Auth & user roles",
+      "PostgreSQL + Prisma",
       "API integrations",
+      "Admin dashboard",
     ],
   },
   {
     title: "Care & Support Plan",
     price: "₹1,499 / month",
     description:
-      "Ongoing fixes, small features, monitoring and hosting checkups after launch.",
+      "Ongoing fixes, small feature requests, monitoring and hosting checkups after launch, so the site keeps running smoothly.",
     features: [
-      "Monthly updates",
       "Bug fixes",
+      "Small feature updates",
       "Uptime monitoring",
-      "Priority support",
+      "Monthly report",
     ],
   },
 ];
+
 
 const portfolio = [
   {
