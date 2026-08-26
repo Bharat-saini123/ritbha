@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendContactAlert } from "@/lib/mailer";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -9,21 +10,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
 
-  // If DATABASE_URL isn't set yet (e.g. first run before Postgres is wired
-  // up), don't hard-fail the form — log it and return success so the UI
-  // still works with the static/fake-data setup.
+  // ── 1. Persist to DB (optional — skipped if DATABASE_URL not set) ──────────
+  let savedId: string | undefined;
+
   if (!process.env.DATABASE_URL) {
     console.log("[contact] (no DATABASE_URL — not persisted):", body);
-    return NextResponse.json({ ok: true, persisted: false });
+  } else {
+    try {
+      const saved = await prisma.contactMessage.create({
+        data: { name, email, projectType, budget, message },
+      });
+      savedId = saved.id;
+    } catch (err) {
+      console.error("[contact] failed to persist:", err);
+      // Non-fatal — still try to send the email so the lead isn't lost.
+    }
   }
 
-  try {
-    const saved = await prisma.contactMessage.create({
-      data: { name, email, projectType, budget, message },
-    });
-    return NextResponse.json({ ok: true, persisted: true, id: saved.id });
-  } catch (err) {
-    console.error("[contact] failed to persist:", err);
-    return NextResponse.json({ error: "Could not save message." }, { status: 500 });
+  // ── 2. Send notification email ─────────────────────────────────────────────
+  if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
+    try {
+      await sendContactAlert({ name, email, projectType, budget, message });
+    } catch (err) {
+      // Email failure is non-fatal — log it but still return success to the
+      // client so they don't re-submit and create duplicate leads.
+      console.error("[contact] email notification failed:", err);
+    }
+  } else {
+    console.warn("[contact] GMAIL_USER / GMAIL_PASS not set — email skipped.");
   }
+
+  return NextResponse.json({ ok: true, persisted: !!savedId, id: savedId });
 }
