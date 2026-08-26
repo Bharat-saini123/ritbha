@@ -9,17 +9,65 @@ function createTransporter() {
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.GMAIL_USER,   // your Gmail address
-      pass: process.env.GMAIL_PASS,   // 16-char Gmail App Password (NOT your real password)
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
     },
   });
 }
 
-export const mailer =
-  globalForMailer.mailer ?? createTransporter();
+export const mailer = globalForMailer.mailer ?? createTransporter();
 
 if (process.env.NODE_ENV !== "production") {
   globalForMailer.mailer = mailer;
+}
+
+// ── Design tokens (matches tailwind.config.ts) ────────────────────────────
+const C = {
+  bg:       "#0B0F1A",
+  surface:  "#111827",
+  surface2: "#1a2235",
+  accent:   "#818cf8",   // electric indigo
+  accent2:  "#c084fc",   // violet
+  ink:      "#f1f5f9",
+  muted:    "#64748b",
+  line:     "rgba(129,140,248,0.18)",
+  border:   "#1e293b",
+};
+
+// ── Shared email wrapper ──────────────────────────────────────────────────
+function wrap(body: string) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+<body style="margin:0;padding:24px 16px;background:${C.bg};font-family:'Helvetica Neue',Arial,sans-serif">
+  <div style="max-width:580px;margin:0 auto;background:${C.surface};border:1px solid ${C.line};border-radius:16px;overflow:hidden">
+
+    <!-- Header bar -->
+    <div style="background:linear-gradient(135deg,${C.surface2} 0%,${C.bg} 100%);border-bottom:1px solid ${C.line};padding:20px 28px;display:flex;align-items:center;gap:10px">
+      <div style="width:8px;height:8px;border-radius:50%;background:${C.accent};box-shadow:0 0 8px ${C.accent}"></div>
+      <span style="font-size:11px;color:${C.accent};letter-spacing:0.12em;text-transform:uppercase;font-weight:600">Ritbha · Root. Build. Grow.</span>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:28px">
+      ${body}
+    </div>
+
+    <!-- Footer -->
+    <div style="border-top:1px solid ${C.line};padding:16px 28px">
+      <p style="margin:0;font-size:11px;color:${C.muted}">Ritbha · Narnaul, Haryana, India · ritbha.com</p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+// ── Shared row helper ─────────────────────────────────────────────────────
+function row(label: string, value: string) {
+  return `<tr>
+    <td style="padding:10px 0;color:${C.accent};font-size:12px;text-transform:uppercase;letter-spacing:0.08em;width:130px;vertical-align:top">${label}</td>
+    <td style="padding:10px 0;color:${C.ink};font-size:14px;vertical-align:top">${value}</td>
+  </tr>`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -40,69 +88,42 @@ export async function sendContactAlert(payload: ContactPayload) {
   const { name, email, projectType, budget, message } = payload;
   const to = process.env.NOTIFY_EMAIL ?? "sainibharat277@gmail.com";
 
+  const body = `
+    <h2 style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.ink};line-height:1.3">
+      New lead from <span style="color:${C.accent}">${name}</span>
+    </h2>
+    <p style="margin:0 0 22px;font-size:14px;color:${C.muted}">
+      Someone just filled in the contact form on Ritbha.
+    </p>
+
+    <table style="width:100%;border-collapse:collapse">
+      ${row("Name",  name)}
+      ${row("Email", `<a href="mailto:${email}" style="color:${C.accent};text-decoration:none">${email}</a>`)}
+      ${projectType ? row("Project", projectType) : ""}
+      ${budget      ? row("Budget",  budget)       : ""}
+    </table>
+
+    <!-- Divider -->
+    <div style="height:1px;background:${C.line};margin:20px 0"></div>
+
+    <p style="margin:0 0 8px;font-size:11px;color:${C.accent};text-transform:uppercase;letter-spacing:0.1em">Message</p>
+    <p style="margin:0 0 26px;font-size:15px;color:${C.ink};line-height:1.75;white-space:pre-wrap">${message}</p>
+
+    <!-- CTA button -->
+    <a href="mailto:${email}"
+       style="display:inline-block;background:${C.accent};color:${C.bg};font-weight:700;
+              font-size:14px;padding:13px 30px;border-radius:999px;text-decoration:none;
+              letter-spacing:0.02em">
+      Reply to ${name} →
+    </a>
+  `;
+
   await mailer.sendMail({
-    from: `"Ritbha Website" <${process.env.GMAIL_USER}>`,
+    from:    `"Ritbha Website" <${process.env.GMAIL_USER}>`,
     to,
-    replyTo: email,           // clicking Reply goes straight to the client
+    replyTo: email,
     subject: `🔔 New enquiry from ${name}`,
-    html: `
-      <div style="font-family:sans-serif;max-width:580px;margin:auto;padding:28px;
-                  background:#0d1f15;border:1px solid #1e3a24;border-radius:14px;color:#e8f5e9">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-          <div style="width:10px;height:10px;border-radius:50%;background:#c9f169"></div>
-          <span style="font-size:13px;color:#c9f169;letter-spacing:0.1em;text-transform:uppercase">
-            New Lead · Ritbha
-          </span>
-        </div>
-
-        <h2 style="margin:0 0 20px;font-size:20px;font-weight:700;color:#fff">
-          ${name} wants to work with you
-        </h2>
-
-        <table style="width:100%;border-collapse:collapse;font-size:14px">
-          <tr>
-            <td style="padding:10px 0;color:#84cc16;width:130px;vertical-align:top">Name</td>
-            <td style="padding:10px 0;color:#fff;font-weight:600">${name}</td>
-          </tr>
-          <tr>
-            <td style="padding:10px 0;color:#84cc16;vertical-align:top">Email</td>
-            <td style="padding:10px 0">
-              <a href="mailto:${email}" style="color:#c9f169;text-decoration:none">${email}</a>
-            </td>
-          </tr>
-          ${projectType ? `
-          <tr>
-            <td style="padding:10px 0;color:#84cc16;vertical-align:top">Project type</td>
-            <td style="padding:10px 0;color:#fff">${projectType}</td>
-          </tr>` : ""}
-          ${budget ? `
-          <tr>
-            <td style="padding:10px 0;color:#84cc16;vertical-align:top">Budget</td>
-            <td style="padding:10px 0;color:#fff">${budget}</td>
-          </tr>` : ""}
-        </table>
-
-        <div style="margin:20px 0;height:1px;background:#1e3a24"></div>
-
-        <p style="font-size:13px;color:#84cc16;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.08em">
-          Message
-        </p>
-        <p style="font-size:15px;color:#e8f5e9;margin:0;line-height:1.7;white-space:pre-wrap">${message}</p>
-
-        <div style="margin:28px 0 0">
-          <a href="mailto:${email}"
-             style="display:inline-block;background:#c9f169;color:#0d1f15;font-weight:700;
-                    font-size:14px;padding:12px 28px;border-radius:999px;text-decoration:none">
-            Reply to ${name} →
-          </a>
-        </div>
-
-        <div style="margin:24px 0 0;height:1px;background:#1e3a24"></div>
-        <p style="font-size:12px;color:#4a7c59;margin:12px 0 0">
-          Sent automatically from the Ritbha contact form · ritbha.com
-        </p>
-      </div>
-    `,
+    html:    wrap(body),
   });
 }
 
@@ -111,77 +132,53 @@ export async function sendContactAlert(payload: ContactPayload) {
 // ─────────────────────────────────────────────────────────────────────────────
 export async function sendConfirmationEmail(payload: ContactPayload) {
   const { name, email, projectType, budget, message } = payload;
+  const replyTo = process.env.NOTIFY_EMAIL ?? "sainibharat277@gmail.com";
+
+  const body = `
+    <h2 style="margin:0 0 16px;font-size:22px;font-weight:700;color:${C.ink};line-height:1.3">
+      Hey ${name}, we got your message! 👋
+    </h2>
+
+    <p style="font-size:15px;color:#94a3b8;line-height:1.8;margin:0 0 14px">
+      Thank you for reaching out to <strong style="color:${C.accent}">Ritbha</strong>.
+      We've received your enquiry and will review it carefully.
+    </p>
+    <p style="font-size:15px;color:#94a3b8;line-height:1.8;margin:0 0 24px">
+      Expect a reply within <strong style="color:${C.ink}">24 hours</strong> — usually sooner.
+      Feel free to reply to this email if you have anything to add.
+    </p>
+
+    <!-- Summary card -->
+    <div style="background:${C.bg};border:1px solid ${C.line};border-radius:12px;padding:20px 22px;margin-bottom:26px">
+      <p style="margin:0 0 14px;font-size:11px;color:${C.accent};text-transform:uppercase;letter-spacing:0.1em">
+        Your submission summary
+      </p>
+      <table style="width:100%;border-collapse:collapse">
+        ${projectType ? row("Project", projectType) : ""}
+        ${budget      ? row("Budget",  budget)       : ""}
+        ${row("Message", `<span style="color:#94a3b8;line-height:1.65">${message}</span>`)}
+      </table>
+    </div>
+
+    <p style="font-size:15px;color:#94a3b8;line-height:1.8;margin:0 0 28px">
+      Looking forward to hearing more about your project.
+      Let&apos;s build something great together! 🚀
+    </p>
+
+    <!-- Signature -->
+    <p style="font-size:15px;color:${C.ink};margin:0 0 4px;font-weight:600">Bharat Saini</p>
+    <p style="font-size:13px;color:${C.muted};margin:0">Founder, Ritbha · Full-Stack Web Studio</p>
+
+    <!-- Gradient accent line -->
+    <div style="height:3px;margin-top:28px;border-radius:999px;
+                background:linear-gradient(90deg,${C.accent},${C.accent2},transparent)"></div>
+  `;
 
   await mailer.sendMail({
-    from: `"Bharat @ Ritbha" <${process.env.GMAIL_USER}>`,
-    to: email,
-    replyTo: process.env.NOTIFY_EMAIL ?? "sainibharat277@gmail.com",
-    subject: `Thanks for reaching out, ${name}! 🌱`,
-    html: `
-      <div style="font-family:sans-serif;max-width:580px;margin:auto;padding:28px;
-                  background:#0d1f15;border:1px solid #1e3a24;border-radius:14px;color:#e8f5e9">
-
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
-          <div style="width:10px;height:10px;border-radius:50%;background:#c9f169"></div>
-          <span style="font-size:13px;color:#c9f169;letter-spacing:0.1em;text-transform:uppercase">
-            Ritbha · Root. Build. Grow.
-          </span>
-        </div>
-
-        <h2 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#fff;line-height:1.3">
-          Hey ${name}, we got your message! 👋
-        </h2>
-
-        <p style="font-size:15px;color:#c8e6c9;line-height:1.8;margin:0 0 16px">
-          Thank you for reaching out to <strong style="color:#c9f169">Ritbha</strong>.
-          We've received your enquiry and will review it carefully.
-        </p>
-
-        <p style="font-size:15px;color:#c8e6c9;line-height:1.8;margin:0 0 24px">
-          You can expect a reply from us within
-          <strong style="color:#fff">24 hours</strong> — usually sooner.
-          In the meantime, feel free to reply to this email if you have
-          any additional details to share.
-        </p>
-
-        <!-- Summary box -->
-        <div style="background:#0a1a10;border:1px solid #1e3a24;border-radius:10px;padding:18px 20px;margin-bottom:24px">
-          <p style="font-size:12px;color:#84cc16;margin:0 0 12px;text-transform:uppercase;letter-spacing:0.1em">
-            Your submission summary
-          </p>
-          <table style="width:100%;border-collapse:collapse;font-size:14px">
-            ${projectType ? `
-            <tr>
-              <td style="padding:6px 0;color:#6b7280;width:120px">Project</td>
-              <td style="padding:6px 0;color:#fff">${projectType}</td>
-            </tr>` : ""}
-            ${budget ? `
-            <tr>
-              <td style="padding:6px 0;color:#6b7280">Budget</td>
-              <td style="padding:6px 0;color:#fff">${budget}</td>
-            </tr>` : ""}
-            <tr>
-              <td style="padding:6px 0;color:#6b7280;vertical-align:top">Message</td>
-              <td style="padding:6px 0;color:#c8e6c9;line-height:1.6">${message}</td>
-            </tr>
-          </table>
-        </div>
-
-        <p style="font-size:15px;color:#c8e6c9;line-height:1.8;margin:0 0 28px">
-          Looking forward to hearing more about your project. Let's build something great together! 🚀
-        </p>
-
-        <p style="font-size:15px;color:#fff;margin:0">
-          Warm regards,<br/>
-          <strong style="color:#c9f169">Bharat Saini</strong><br/>
-          <span style="color:#6b7280;font-size:13px">Founder, Ritbha · Full-Stack Web Studio</span>
-        </p>
-
-        <div style="margin:28px 0 0;height:1px;background:#1e3a24"></div>
-        <p style="font-size:12px;color:#4a7c59;margin:12px 0 0">
-          Ritbha · Narnaul, Haryana, India · ritbha.com
-        </p>
-      </div>
-    `,
+    from:    `"Bharat @ Ritbha" <${process.env.GMAIL_USER}>`,
+    to:      email,
+    replyTo,
+    subject: `Thanks for reaching out, ${name}! ✦`,
+    html:    wrap(body),
   });
 }
