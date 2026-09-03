@@ -7,8 +7,8 @@ const techStack = [
   "REST APIs", "MongoDB", "Redis", "AWS",
 ];
 
-// WhatsApp number (with country code, no + or spaces)
-const WHATSAPP_NUMBER = "917300165821";
+// WhatsApp number — env var AUTHOR_NUMBER se aata hai (brand.whatsapp via data.ts)
+const WHATSAPP_NUMBER = `91${(brand.whatsapp ?? "").replace(/\D/g, "").slice(-10)}`;
 
 export default function Hero() {
   return (
