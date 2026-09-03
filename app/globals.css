@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Make every section semi-transparent so the global bg video shows ────── */
+/* Sections have borders + their own surface colours, so we override bg only  */
+section,
+footer,
+header {
+  background-color: transparent !important;
+}
+
+/* Re-apply backdrop-blur tint on sections that need it */
+section > div,
+.section-bg {
+  /* nothing by default — individual sections use bg-surface/XX already */
+}
+
 ::selection {
   background: #818cf8;
   color: #0B0F1A;

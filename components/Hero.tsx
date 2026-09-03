@@ -13,42 +13,20 @@ export default function Hero() {
       id="top"
       className="relative overflow-hidden border-b border-line min-h-[92vh] flex flex-col"
     >
-      {/* ── Background video ─────────────────────────────────────────────── */}
-      {/*
-        Using a free Pexels embed (dark tech/code atmosphere).
-        Replace the src with your own .mp4 in /public if you have one.
-        e.g. src="/hero-bg.mp4"
-      */}
-      <video
-        className="hero-video"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="none"
-        poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
-      >
-        <source
-          src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_25fps.mp4"
-          type="video/mp4"
-        />
-      </video>
-
-      {/* ── Gradient overlay on top of video ─────────────────────────────── */}
-      <div className="hero-video-overlay" />
-
-      {/* ── Ambient colour blobs ─────────────────────────────────────────── */}
+      {/* ── Ambient colour blobs (sit on top of the global video) ────────── */}
       <div
-        className="pointer-events-none absolute left-[5%] top-[10%] h-[420px] w-[420px] rounded-full opacity-[0.07] blur-[100px] z-[2]"
+        className="pointer-events-none absolute left-[5%] top-[10%] h-[420px] w-[420px] rounded-full opacity-[0.10] blur-[100px] z-[1]"
         style={{ background: "radial-gradient(circle, #818cf8, transparent 70%)" }}
+        aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute right-[10%] top-[20%] h-[280px] w-[280px] rounded-full opacity-[0.05] blur-[80px] z-[2]"
+        className="pointer-events-none absolute right-[10%] top-[20%] h-[280px] w-[280px] rounded-full opacity-[0.07] blur-[80px] z-[1]"
         style={{ background: "radial-gradient(circle, #c084fc, transparent 70%)" }}
+        aria-hidden="true"
       />
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
-      <div className="relative z-[3] mx-auto grid max-w-wrap gap-16 px-6 pb-20 pt-16 md:grid-cols-[1.1fr_0.9fr] md:pt-24 flex-1">
+      <div className="relative z-[2] mx-auto grid max-w-wrap gap-16 px-6 pb-20 pt-16 md:grid-cols-[1.1fr_0.9fr] md:pt-24 flex-1">
         <div>
           <p className="eyebrow mb-6">{brand.founder} · Full-Stack Web Studio</p>
           <h1 className="font-display text-[2.6rem] leading-[1.05] tracking-tight md:text-[3.6rem]">
@@ -116,7 +94,7 @@ export default function Hero() {
             />
 
             {/* Terminal card */}
-            <div className="absolute -bottom-8 left-1/2 w-[86%] -translate-x-1/2 rounded-2xl border border-line bg-surface/90 p-5 font-mono text-[12.5px] leading-relaxed text-muted shadow-2xl backdrop-blur">
+            <div className="absolute -bottom-8 left-1/2 w-[86%] -translate-x-1/2 rounded-2xl border border-line bg-surface/80 p-5 font-mono text-[12.5px] leading-relaxed text-muted shadow-2xl backdrop-blur">
               <p className="text-accent">$ studio.stack</p>
               <p>= [&quot;Next.js&quot;, &quot;Node.js&quot;, &quot;PostgreSQL&quot;]</p>
               <p className="text-accent">$ studio.status</p>
@@ -130,7 +108,7 @@ export default function Hero() {
       </div>
 
       {/* ── Tech stack badge strip ────────────────────────────────────────── */}
-      <div className="relative z-[3] border-t border-line/50 bg-bg/40 px-6 py-4 backdrop-blur">
+      <div className="relative z-[2] border-t border-line/50 bg-bg/30 px-6 py-4 backdrop-blur-sm">
         <div className="mx-auto max-w-wrap">
           <div className="flex flex-wrap items-center gap-2">
             <span className="mr-3 font-mono text-[0.6rem] tracking-widest text-muted/50 uppercase">
@@ -139,7 +117,7 @@ export default function Hero() {
             {techStack.map((tech) => (
               <span
                 key={tech}
-                className="rounded-full border border-line bg-surface/40 px-3 py-1 font-mono text-[0.65rem] text-muted/80 transition-colors hover:border-accent/40 hover:text-accent"
+                className="rounded-full border border-line bg-surface/30 px-3 py-1 font-mono text-[0.65rem] text-muted/80 transition-colors hover:border-accent/40 hover:text-accent"
               >
                 {tech}
               </span>
