@@ -59,6 +59,53 @@ export const careers = {
   cta: "Introduce yourself",
 };
 
+// -------------------- Experience --------------------
+export const experience = [
+  {
+    period: "2025 — Present",
+    role: "Founder & Full-Stack Developer",
+    company: "Ritbha Web Studio",
+    description:
+      "Building and growing a full-stack web studio focused on delivering scalable, production-ready web products for businesses and startups.",
+    highlights: [
+      "Architected and shipped multiple client projects end-to-end",
+      "Designed pricing model and service tiers",
+      "Established modern stack (Next.js + Prisma + PostgreSQL)",
+      "Managing deployment pipelines and client relations",
+    ],
+    tags: ["Next.js", "Node.js", "PostgreSQL", "Prisma", "TypeScript", "Vercel"],
+  },
+  {
+    period: "2023 — 2025",
+    role: "Full-Stack Developer",
+    company: "Freelance & Client Projects",
+    description:
+      "Delivered bespoke web solutions for clients across e-commerce, real estate and service industries.",
+    highlights: [
+      "Built e-commerce platforms with Razorpay & Cashfree payment integrations",
+      "Developed real estate listing portals with advanced search",
+      "Integrated CRM features, admin dashboards and role-based auth",
+      "Deployed on AWS EC2, Nginx and managed cloud databases",
+    ],
+    tags: ["React", "Express.js", "MongoDB", "Redis", "Docker", "AWS EC2"],
+  },
+  {
+    period: "2022 — 2023",
+    role: "Web Developer",
+    company: "Learning & Open Source",
+    description:
+      "Deep dive into modern web technologies through personal projects, open-source contributions and self-directed study.",
+    highlights: [
+      "Built full-stack side projects to master React and Node.js",
+      "Contributed to open-source tools and learned DevOps basics",
+      "Mastered database design with PostgreSQL and MySQL",
+      "Completed advanced courses in TypeScript and system design",
+    ],
+    tags: ["React", "Node.js", "MySQL", "TypeScript", "Git", "Linux"],
+  },
+];
+
+
 // Used as system-prompt context for the chat widget (/api/chat), so the
 // assistant can answer pricing/contact questions accurately.
 // Note: services are now fetched from Postgres at runtime, so we list the

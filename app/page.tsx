@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
+import Marquee from "@/components/Marquee";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Services from "@/components/Services";
 import Skills from "@/components/Skills";
 import Portfolio from "@/components/Portfolio";
 import Team from "@/components/Team";
+import Experience from "@/components/Experience";
 import Careers from "@/components/Careers";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
@@ -14,7 +16,7 @@ import { prisma } from "@/lib/prisma";
 
 // This is an async React Server Component — it fetches live data from
 // Postgres (via Prisma) at request time and passes it down as props.
-// Static content (brand, about, team, etc.) still lives in lib/data.ts
+// Static content (brand, about, team, experience, etc.) lives in lib/data.ts
 // because those fields have no Prisma model.
 
 export default async function Home() {
@@ -31,12 +33,14 @@ export default async function Home() {
   return (
     <main className="grain">
       <Navbar />
+      <Marquee />
       <Hero />
       <About />
       <Services services={services} />
       <Skills categories={categories} />
       <Portfolio portfolio={portfolio} />
       <Team />
+      <Experience />
       <Careers />
       <Testimonials testimonials={testimonials} />
       <Contact />
