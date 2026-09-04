@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  ADMIN_EMAIL,
   adminCookieName,
   adminSessionMaxAge,
   createAdminSession,
+  isValidAdminSecret,
 } from "@/lib/admin-auth";
 
 export async function POST(request: NextRequest) {
-  const { email } = await request.json().catch(() => ({}));
+  const { secret } = await request.json().catch(() => ({}));
 
-  if (typeof email !== "string" || email.trim().toLowerCase() !== ADMIN_EMAIL) {
-    return NextResponse.json({ error: "This email is not authorized." }, { status: 403 });
+  if (!isValidAdminSecret(secret)) {
+    return NextResponse.json({ error: "That secret is not valid." }, { status: 403 });
   }
 
   const response = NextResponse.json({ ok: true });

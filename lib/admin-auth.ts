@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "sainibharat277@gmail.com";
+export const ADMIN_LOGIN_SECRET = process.env.ADMIN_LOGIN_SECRET || process.env.ADMIN_SESSION_SECRET || "ritbha-admin-development-secret";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
 function secret() {
@@ -9,6 +10,11 @@ function secret() {
 
 function signature(value: string) {
   return createHmac("sha256", secret()).update(value).digest("hex");
+}
+
+export function isValidAdminSecret(value: unknown) {
+  if (typeof value !== "string" || !value || value.length !== ADMIN_LOGIN_SECRET.length) return false;
+  return timingSafeEqual(Buffer.from(value), Buffer.from(ADMIN_LOGIN_SECRET));
 }
 
 export function createAdminSession() {

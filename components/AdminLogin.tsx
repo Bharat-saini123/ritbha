@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
+  const [secret, setSecret] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,11 +15,11 @@ export default function AdminLogin() {
     const response = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ secret }),
     });
 
     if (!response.ok) {
-      setError("This email does not have admin access.");
+      setError("That secret is not valid.");
       setLoading(false);
       return;
     }
@@ -33,16 +33,16 @@ export default function AdminLogin() {
         <span className="admin-brand-mark">R</span>
         <span className="admin-kicker">Ritbha / Private area</span>
         <h1>Welcome back.</h1>
-        <p>Enter your authorized email to open the studio control room.</p>
+        <p>Enter the private secret to open the studio control room.</p>
         <form onSubmit={submit}>
-          <label htmlFor="admin-email">Email address</label>
+          <label htmlFor="admin-secret">Private secret</label>
           <input
-            id="admin-email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@example.com"
-            autoComplete="email"
+            id="admin-secret"
+            type="password"
+            value={secret}
+            onChange={(event) => setSecret(event.target.value)}
+            placeholder="Enter your secret"
+            autoComplete="current-password"
             required
           />
           {error && <span className="admin-login-error">{error}</span>}
