@@ -59,6 +59,12 @@ export default function Navbar() {
 
         {/* Right side: Hire Me CTA + hamburger */}
         <div className="flex items-center gap-3">
+          <Link
+            href="/admin"
+            className="hidden text-xs text-muted transition-colors hover:text-ink sm:inline-flex"
+          >
+            Admin ↗
+          </Link>
           <a
             href="#contact"
             className="hidden sm:inline-flex rounded-full bg-accent px-5 py-2 text-sm font-medium text-bg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(129,140,248,0.4)]"
