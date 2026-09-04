@@ -1,7 +1,6 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
-export const ADMIN_EMAIL = "sainibharat277@gmail.com";
-const COOKIE_NAME = "ritbha_admin_session";
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "sainibharat277@gmail.com";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
 function secret() {
@@ -35,7 +34,7 @@ export function isValidAdminSession(value?: string) {
 }
 
 export function adminCookieName() {
-  return COOKIE_NAME;
+  return process.env.ADMIN_COOKIE_NAME || "ritbha_admin_session";
 }
 
 export function adminSessionMaxAge() {
