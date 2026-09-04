@@ -1,3 +1,5 @@
+import ReviewForm from "@/components/ReviewForm";
+
 type Testimonial = {
   id: string;
   name: string;
@@ -6,6 +8,13 @@ type Testimonial = {
   quote: string;
   rating?: number;
   order: number;
+};
+
+type Review = {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
 };
 
 function Stars({ rating = 5 }: { rating?: number }) {
@@ -52,8 +61,10 @@ function Avatar({ name }: { name: string }) {
 
 export default function Testimonials({
   testimonials,
+  reviews,
 }: {
   testimonials: Testimonial[];
+  reviews: Review[];
 }) {
   // If there are no testimonials yet, show placeholder cards
   const items: Testimonial[] =
@@ -92,6 +103,16 @@ export default function Testimonials({
           },
         ];
 
+  const reviewItems: Testimonial[] = reviews.map((review) => ({
+    id: review.id,
+    name: review.name,
+    role: "Verified reviewer",
+    company: "Google account",
+    quote: review.comment,
+    rating: review.rating,
+    order: 0,
+  }));
+
   return (
     <section className="border-b border-line">
       <div className="mx-auto max-w-wrap px-6 py-24">
@@ -117,7 +138,7 @@ export default function Testimonials({
 
         {/* Cards grid */}
         <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {items.map((t) => (
+          {[...reviewItems, ...items].map((t) => (
             <figure
               key={t.name}
               className="group flex flex-col justify-between rounded-2xl border border-line bg-surface/50 p-7 transition-all duration-300 hover:border-accent/30 hover:bg-surface2 hover:shadow-[0_0_32px_rgba(129,140,248,0.07)]"
@@ -143,6 +164,7 @@ export default function Testimonials({
             </figure>
           ))}
         </div>
+        <ReviewForm />
       </div>
     </section>
   );

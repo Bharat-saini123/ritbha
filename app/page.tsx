@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 // because those fields have no Prisma model.
 
 export default async function Home() {
-  const [categories, services, portfolio, testimonials] = await Promise.all([
+  const [categories, services, portfolio, testimonials, reviews] = await Promise.all([
     prisma.skillCategory.findMany({
       orderBy: { order: "asc" },
       include: { skills: true },
@@ -30,6 +30,7 @@ export default async function Home() {
     prisma.service.findMany({ orderBy: { order: "asc" } }),
     prisma.portfolioItem.findMany({ orderBy: { order: "asc" } }),
     prisma.testimonial.findMany({ where: { isVisible: true }, orderBy: { order: "asc" } }),
+    prisma.review.findMany({ where: { isVisible: true }, orderBy: { createdAt: "desc" } }),
   ]);
 
   return (
@@ -44,7 +45,7 @@ export default async function Home() {
       <Team />
       <Experience />
       <Careers />
-      <Testimonials testimonials={testimonials} />
+      <Testimonials testimonials={testimonials} reviews={reviews} />
       <Contact />
       <Footer />
       <ChatWidget />

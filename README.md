@@ -9,6 +9,7 @@ Portfolio / Team / Careers / Contact) with a "growth ring" visual identity.
 - **Tailwind CSS** — custom "growth ring" design system (see `tailwind.config.ts`)
 - **Prisma + PostgreSQL** — schema in `prisma/schema.prisma`
 - **Grok (xAI) chat widget** — `/api/chat` calls the xAI API for a live chat assistant
+- **Google OAuth reviews** — visitors sign in with Google and can publish one rating/review
 - Content currently comes from `lib/data.ts` (static/fake data, as requested)
 
 ## Run locally
@@ -44,6 +45,24 @@ configured yet" message instead of crashing.
 The `/api/contact` route already writes submissions to `ContactMessage` in
 Postgres when `DATABASE_URL` is set, and degrades gracefully (logs only)
 when it isn't.
+
+## Google sign-in and ratings
+1. In Google Cloud Console, create OAuth credentials for a Web application.
+2. Add `http://localhost:3000/api/auth/callback/google` as an authorized redirect URI (use your production domain for production).
+3. Add these values to `.env`:
+  ```bash
+  NEXTAUTH_URL=http://localhost:3000
+  NEXTAUTH_SECRET=use-a-long-random-secret
+  GOOGLE_CLIENT_ID=your-google-client-id
+  GOOGLE_CLIENT_SECRET=your-google-client-secret
+  DATABASE_URL=your-postgres-url
+  ```
+4. Apply the new auth and review tables:
+  ```bash
+  npm run db:push
+  ```
+
+Signed-in visitors can submit one review. Submitting again updates their existing review.
 
 ## Structure
 ```
