@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
@@ -17,10 +18,19 @@ export async function POST(request: NextRequest) {
   const user = await prisma.user.findUnique({ where: { email: session.user.email } });
   if (!user) return NextResponse.json({ error: "Your account could not be found." }, { status: 404 });
 
-  const review = await prisma.review.upsert({
-    where: { userId: user.id },
-    update: { name: session.user.name || "Google user", image: session.user.image, rating, comment, isVisible: true },
-    create: { userId: user.id, name: session.user.name || "Google user", image: session.user.image, rating, comment },
-  });
+  const existingReview = await prisma.review.findUnique({ where: { userId: user.id } });
+  if (existingReview) return NextResponse.json({ error: "You have already submitted a review." }, { status: 409 });
+
+  let review;
+  try {
+    review = await prisma.review.create({
+      data: { userId: user.id, name: session.user.name || "Google user", image: session.user.image, rating, comment },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return NextResponse.json({ error: "You have already submitted a review." }, { status: 409 });
+    }
+    throw error;
+  }
   return NextResponse.json({ review });
 }

@@ -9,6 +9,7 @@ export default function ReviewForm() {
   const [comment, setComment] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   if (status === "loading") return null;
   if (!session) {
@@ -26,9 +27,12 @@ export default function ReviewForm() {
     setMessage("");
     const response = await fetch("/api/reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rating, comment }) });
     const result = await response.json();
-    setMessage(response.ok ? "Thanks, your review is live." : result.error || "Could not save your review.");
+    setMessage(response.ok ? "Review submitted successfully. Thank you for sharing your experience." : result.error || "Could not save your review.");
     setSaving(false);
-    if (response.ok) setComment("");
+    if (response.ok) {
+      setComment("");
+      setSubmitted(true);
+    }
   }
 
   return (
@@ -39,8 +43,8 @@ export default function ReviewForm() {
           {Array.from({ length: 5 }, (_, index) => <button key={index} type="button" onClick={() => setRating(index + 1)} className={`text-2xl ${index < rating ? "star-filled" : "star-empty"}`} aria-label={`${index + 1} stars`}>★</button>)}
         </div>
       </div>
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row"><textarea required minLength={10} maxLength={500} value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Tell us about your experience..." className="min-h-20 flex-1 resize-y rounded-xl border border-line bg-surface/50 px-4 py-3 text-sm text-ink outline-none placeholder:text-muted focus:border-accent" /><button disabled={saving} className="rounded-full bg-accent px-5 py-3 text-sm font-medium text-bg transition hover:brightness-110 disabled:opacity-50">{saving ? "Saving..." : "Publish review"}</button></div>
-      {message && <p className="mt-3 text-sm text-muted" role="status">{message}</p>}
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row"><textarea required minLength={10} maxLength={500} value={comment} onChange={(event) => setComment(event.target.value)} disabled={submitted} placeholder={submitted ? "Your review has been submitted" : "Tell us about your experience..."} className="min-h-20 flex-1 resize-y rounded-xl border border-line bg-surface/50 px-4 py-3 text-sm text-ink outline-none placeholder:text-muted focus:border-accent disabled:cursor-not-allowed disabled:opacity-60" /><button disabled={saving || submitted} className="review-publish-button" aria-label={submitted ? "Review submitted" : saving ? "Saving review" : "Publish review"}>{submitted ? "Submitted" : saving ? "Saving..." : "Publish review"}<span aria-hidden="true">{submitted ? "✓" : "→"}</span></button></div>
+      {message && <p className={submitted ? "review-success-message" : "mt-3 text-sm text-muted"} role="status">{message}</p>}
     </form>
   );
 }
