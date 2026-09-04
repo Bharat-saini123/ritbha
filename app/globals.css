@@ -130,6 +130,24 @@ body {
   animation-play-state: paused;
 }
 
+/* Subtle ambient light behind the footer content */
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  background-image:
+    radial-gradient(ellipse at 12% 72%, rgba(129, 140, 248, 0.1), transparent 28%),
+    radial-gradient(ellipse at 88% 28%, rgba(244, 155, 69, 0.08), transparent 25%),
+    linear-gradient(135deg, rgba(17, 24, 39, 0.2), transparent 55%);
+}
+
+.site-footer::after {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(115deg, transparent 0 80px, rgba(255, 255, 255, 0.018) 81px, transparent 82px 160px);
+  content: "";
+  pointer-events: none;
+}
+
 /* ── Hero video background ───────────────────────────────────────────────── */
 .hero-video {
   position: absolute;

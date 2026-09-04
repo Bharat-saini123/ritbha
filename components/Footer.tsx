@@ -1,4 +1,5 @@
 import { brand } from "@/lib/data";
+import Marquee from "@/components/Marquee";
 
 const navLinks = [
   { href: "#about",      label: "About" },
@@ -51,8 +52,9 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-line">
-      <div className="mx-auto max-w-wrap px-6 py-12">
+    <footer className="site-footer border-t border-line">
+      <Marquee />
+      <div className="relative z-10 mx-auto max-w-wrap px-6 py-12">
         {/* Top section */}
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           {/* Brand */}
