@@ -40,7 +40,7 @@ export function isValidAdminSession(value?: string) {
 }
 
 export function adminCookieName() {
-  return process.env.ADMIN_COOKIE_NAME || "ritbha_admin_session";
+  return process.env.ADMIN_COOKIE_NAME ?? "";
 }
 
 export function adminSessionMaxAge() {
