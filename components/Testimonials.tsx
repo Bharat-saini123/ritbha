@@ -1,4 +1,3 @@
-import ReviewForm from "@/components/ReviewForm";
 
 type Testimonial = {
   id: string;
@@ -164,7 +163,6 @@ export default function Testimonials({
             </figure>
           ))}
         </div>
-        <ReviewForm />
       </div>
     </section>
   );

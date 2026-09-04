@@ -1,4 +1,5 @@
 import { brand } from "@/lib/data";
+import ReviewForm from "@/components/ReviewForm";
 
 const navLinks = [
   { href: "#about",      label: "About" },
@@ -124,6 +125,8 @@ export default function Footer() {
             </svg>
           </a>
         </div>
+
+        <ReviewForm />
       </div>
     </footer>
   );
