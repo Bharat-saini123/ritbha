@@ -74,19 +74,19 @@ export default function Navbar() {
 
           {/* Hamburger — mobile only */}
           <button
-            className="flex flex-col items-center justify-center gap-1.5 rounded-md p-2 lg:hidden"
+            className="relative flex h-11 w-11 items-center justify-center rounded-md lg:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={open}
           >
             <span
-              className={`block h-px w-5 bg-ink transition-transform duration-300 ${open ? "translate-y-[3.5px] rotate-45" : ""}`}
+              className={`absolute h-px w-5 bg-ink transition-transform duration-300 ${open ? "rotate-45" : "-translate-y-1.5"}`}
             />
             <span
-              className={`block h-px w-5 bg-ink transition-opacity duration-300 ${open ? "opacity-0" : ""}`}
+              className={`absolute h-px w-5 bg-ink transition-opacity duration-300 ${open ? "opacity-0" : "opacity-100"}`}
             />
             <span
-              className={`block h-px w-5 bg-ink transition-transform duration-300 ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`}
+              className={`absolute h-px w-5 bg-ink transition-transform duration-300 ${open ? "-rotate-45" : "translate-y-1.5"}`}
             />
           </button>
         </div>
@@ -110,6 +110,13 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
+          <Link
+            href="/admin"
+            onClick={close}
+            className="border-b border-line/40 py-3 text-sm text-muted transition-colors hover:text-ink"
+          >
+            Admin ↗
+          </Link>
           <a
             href="#contact"
             onClick={close}
