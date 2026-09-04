@@ -49,6 +49,7 @@ model Testimonial {
   role    String
   company String
   quote   String
+  isVisible Boolean @default(true)
   order   Int    @default(0)
 }
 

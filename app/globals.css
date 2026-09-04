@@ -281,6 +281,17 @@ body {
 .admin-collection-top { display: flex; align-items: center; gap: 8px; }
 .admin-record-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--admin-accent); }
 .admin-collection-card p { min-height: 42px; margin: 17px 0; color: var(--admin-muted); font-size: 12px; line-height: 1.65; }
+.admin-collection-card .admin-text-button { margin-top: 18px; }
+.admin-editor-card { display: flex; flex-direction: column; gap: 10px; }
+.admin-editor-card h3 { margin-bottom: 4px; }
+.admin-editor-field { display: grid; gap: 5px; color: var(--admin-muted); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.admin-editor-field input, .admin-editor-field textarea { width: 100%; border: 1px solid var(--admin-line); border-radius: 4px; padding: 9px 10px; color: var(--admin-ink); background: rgba(8, 12, 24, .7); font: inherit; font-size: 12px; letter-spacing: normal; text-transform: none; outline: none; resize: vertical; }
+.admin-editor-field input:focus, .admin-editor-field textarea:focus { border-color: #818cf8; }
+.admin-editor-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 7px; }
+.admin-editor-actions .admin-primary-button { padding: 9px 12px; font-size: 11px; }
+.admin-editor-error { margin: 0 !important; min-height: 0 !important; color: #f49b45 !important; }
+.admin-switch { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px; color: var(--admin-muted); font-size: 11px; cursor: pointer; }
+.admin-switch input { width: 34px; height: 18px; accent-color: #9ce3c2; cursor: pointer; }
 .admin-tag-list { display: flex; flex-wrap: wrap; gap: 5px; }
 .admin-tag-list span { padding: 4px 7px; color: #a5b4fc; background: #1a2235; font-family: var(--font-jbmono); font-size: 8px; }
 .admin-empty-state { display: grid; place-items: center; min-height: 180px; padding: 20px; color: var(--admin-muted); text-align: center; }

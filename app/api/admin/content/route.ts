@@ -1,0 +1,58 @@
+import { NextRequest, NextResponse } from "next/server";
+import { adminCookieName, isValidAdminSession } from "@/lib/admin-auth";
+import { prisma } from "@/lib/prisma";
+
+function isAuthorized(request: NextRequest) {
+  return isValidAdminSession(request.cookies.get(adminCookieName())?.value);
+}
+
+export async function PATCH(request: NextRequest) {
+  if (!isAuthorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body.type !== "string" || typeof body.id !== "string") {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  try {
+    if (body.type === "portfolio") {
+      const item = await prisma.portfolioItem.update({
+        where: { id: body.id },
+        data: {
+          title: body.title,
+          category: body.category,
+          description: body.description,
+          stack: body.stack,
+          image: body.image,
+          liveUrl: body.liveUrl || null,
+        },
+      });
+      return NextResponse.json({ item });
+    }
+
+    if (body.type === "testimonial") {
+      const item = await prisma.testimonial.update({
+        where: { id: body.id },
+        data: { isVisible: Boolean(body.isVisible) },
+      });
+      return NextResponse.json({ item });
+    }
+
+    if (body.type === "category") {
+      const skills = Array.isArray(body.skills)
+        ? body.skills.filter((skill: unknown) => typeof skill === "string" && skill.trim())
+        : [];
+      const item = await prisma.$transaction(async (transaction) => {
+        await transaction.skillCategory.update({ where: { id: body.id }, data: { label: body.label, icon: body.icon } });
+        await transaction.skill.deleteMany({ where: { categoryId: body.id } });
+        await transaction.skill.createMany({ data: skills.map((name: string) => ({ name: name.trim(), categoryId: body.id })) });
+        return transaction.skillCategory.findUnique({ where: { id: body.id }, include: { skills: true } });
+      });
+      return NextResponse.json({ item });
+    }
+
+    return NextResponse.json({ error: "Unknown content type" }, { status: 400 });
+  } catch {
+    return NextResponse.json({ error: "Could not save changes" }, { status: 500 });
+  }
+}

@@ -27,7 +27,7 @@ export default async function Home() {
     }),
     prisma.service.findMany({ orderBy: { order: "asc" } }),
     prisma.portfolioItem.findMany({ orderBy: { order: "asc" } }),
-    prisma.testimonial.findMany({ orderBy: { order: "asc" } }),
+    prisma.testimonial.findMany({ where: { isVisible: true }, orderBy: { order: "asc" } }),
   ]);
 
   return (
