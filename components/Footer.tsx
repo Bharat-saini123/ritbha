@@ -1,5 +1,4 @@
 import { brand } from "@/lib/data";
-import ReviewForm from "@/components/ReviewForm";
 
 const navLinks = [
   { href: "#about",      label: "About" },
@@ -83,6 +82,9 @@ export default function Footer() {
                 {l.label}
               </a>
             ))}
+            <a href="#testimonials" className="text-xs text-muted transition-colors hover:text-ink">
+              Write a review
+            </a>
           </nav>
 
           {/* Contact + socials */}
@@ -126,7 +128,6 @@ export default function Footer() {
           </a>
         </div>
 
-        <ReviewForm />
       </div>
     </footer>
   );

@@ -1,4 +1,6 @@
 
+import ReviewForm from "@/components/ReviewForm";
+
 type Testimonial = {
   id: string;
   name: string;
@@ -113,7 +115,7 @@ export default function Testimonials({
   }));
 
   return (
-    <section className="border-b border-line">
+    <section id="testimonials" className="border-b border-line">
       <div className="mx-auto max-w-wrap px-6 py-24">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -163,6 +165,7 @@ export default function Testimonials({
             </figure>
           ))}
         </div>
+        <ReviewForm />
       </div>
     </section>
   );
