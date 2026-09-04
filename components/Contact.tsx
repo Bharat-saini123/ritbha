@@ -19,13 +19,12 @@ const PROJECT_TYPES = [
 ];
 
 const BUDGET_RANGES = [
-  { value: "under-2k",  label: "Under ₹2,000" },
-  { value: "2k-5k",    label: "₹2,000 – ₹5,000" },
+  { value: "under-5k", label: "Under ₹5,000" },
   { value: "5k-10k",   label: "₹5,000 – ₹10,000" },
   { value: "10k-25k",  label: "₹10,000 – ₹25,000" },
   { value: "25k-50k",  label: "₹25,000 – ₹50,000" },
-  { value: "50k-1l",   label: "₹50,000 – ₹1,00,000" },
-  { value: "1l+",      label: "Above ₹1,00,000" },
+  { value: "50k+",     label: "Above ₹50,000" },
+  { value: "not-sure", label: "Not sure yet" },
 ];
 
 export default function Contact() {
