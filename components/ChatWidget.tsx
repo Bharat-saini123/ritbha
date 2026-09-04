@@ -10,6 +10,13 @@ const WELCOME: Message = {
     "Hi! I'm the Ritbha assistant. Ask me about services, pricing, or how to get started.",
 };
 
+const QUICK_OPTIONS = [
+  { label: "View services", prompt: "What services do you offer?" },
+  { label: "See pricing", prompt: "What are your service prices?" },
+  { label: "Ask about timeline", prompt: "How long does a typical project take?" },
+  { label: "How do I get started?", prompt: "How can I get started with Ritbha?" },
+];
+
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([WELCOME]);
@@ -21,8 +28,8 @@ export default function ChatWidget() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
 
-  async function send() {
-    const text = input.trim();
+  async function send(prompt?: string) {
+    const text = (prompt ?? input).trim();
     if (!text || loading) return;
 
     const next = [...messages, { role: "user" as const, content: text }];
@@ -91,6 +98,20 @@ export default function ChatWidget() {
             )}
           </div>
 
+          {messages.length === 1 && !loading && (
+            <div className="flex flex-wrap gap-2 px-4 pb-3">
+              {QUICK_OPTIONS.map((option) => (
+                <button
+                  key={option.label}
+                  onClick={() => send(option.prompt)}
+                  className="rounded-full border border-line px-3 py-1.5 text-left text-xs text-muted transition-colors hover:border-accent/50 hover:text-ink"
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="flex gap-2 border-t border-line p-3">
             <input
               value={input}
@@ -100,7 +121,7 @@ export default function ChatWidget() {
               className="flex-1 rounded-full border border-line bg-bg px-4 py-2 text-sm outline-none placeholder:text-muted focus:border-accent/50"
             />
             <button
-              onClick={send}
+              onClick={() => send()}
               disabled={loading}
               className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-bg disabled:opacity-60"
             >
