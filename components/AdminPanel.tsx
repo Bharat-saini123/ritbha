@@ -38,6 +38,7 @@ type Testimonial = {
   company: string;
   quote: string;
   isVisible: boolean;
+  source: "testimonial" | "review";
 };
 
 type Category = {
@@ -104,7 +105,7 @@ export default function AdminPanel({ initialData }: { initialData: AdminData }) 
     setData((current) => ({
       ...current,
       portfolio: type === "portfolio" ? current.portfolio.map((entry) => entry.id === id ? item : entry) : current.portfolio,
-      testimonials: type === "testimonial" ? current.testimonials.map((entry) => entry.id === id ? item : entry) : current.testimonials,
+      testimonials: type === "testimonial" || type === "review" ? current.testimonials.map((entry) => entry.id === id ? item : entry) : current.testimonials,
       categories: type === "category" ? current.categories.map((entry) => entry.id === id ? item : entry) : current.categories,
     }));
   };
@@ -266,7 +267,7 @@ function PortfolioEditor({ item, editing, onEdit, onCancel, onSave }: { item: Po
 }
 
 function TestimonialsView({ items, onSave }: { items: Testimonial[]; onSave: SaveContent }) {
-  return <div className="admin-view"><div className="admin-section-intro"><div><span className="admin-kicker">Social proof</span><h2>Testimonials</h2></div><span className="admin-count-label">{items.filter((item) => item.isVisible).length} visible</span></div><div className="admin-collection-grid">{items.map((item) => <article className="admin-collection-card" key={item.id}><div className="admin-collection-top"><span className="admin-record-dot" /><span className="admin-meta">{item.role} · {item.company}</span></div><h3>{item.name}</h3><p>“{item.quote}”</p><label className="admin-switch"><input type="checkbox" checked={item.isVisible} onChange={(event) => onSave("testimonial", item.id, { isVisible: event.target.checked }).catch(() => undefined)} /><span>{item.isVisible ? "Shown on website" : "Hidden from website"}</span></label></article>)}</div></div>;
+  return <div className="admin-view"><div className="admin-section-intro"><div><span className="admin-kicker">Social proof</span><h2>Testimonials</h2></div><span className="admin-count-label">{items.filter((item) => item.isVisible).length} visible</span></div><div className="admin-collection-grid">{items.map((item) => <article className="admin-collection-card" key={item.id}><div className="admin-collection-top"><span className="admin-record-dot" /><span className="admin-meta">{item.role} · {item.company}</span></div><h3>{item.name}</h3><p>“{item.quote}”</p><label className="admin-switch"><input type="checkbox" checked={item.isVisible} onChange={(event) => onSave(item.source, item.id, { isVisible: event.target.checked }).catch(() => undefined)} /><span>{item.isVisible ? "Shown on website" : "Hidden from website"}</span></label></article>)}</div></div>;
 }
 
 function SkillsView({ items, onSave }: { items: Category[]; onSave: SaveContent }) {
@@ -280,7 +281,7 @@ function SkillEditor({ item, editing, onEdit, onCancel, onSave }: { item: Catego
   const [error, setError] = useState("");
   const submit = async () => { setSaving(true); setError(""); try { await onSave("category", item.id, { label: values.label, icon: values.icon, skills: values.skills.split(",").map((skill) => skill.trim()).filter(Boolean) }); onCancel(); } catch { setError("Save failed. Please try again."); } finally { setSaving(false); } };
   if (!editing) return <article className="admin-collection-card"><div className="admin-collection-top"><span className="admin-record-dot" /><span className="admin-meta">{item.skills.length} skills</span></div><h3>{item.icon} {item.label}</h3><p>{item.skills.map((skill) => skill.name).join(" · ")}</p><button className="admin-text-button" onClick={onEdit}>Edit skills →</button></article>;
-  return <article className="admin-collection-card admin-editor-card"><h3>Edit skill group</h3><EditorField label="Icon" value={values.icon} onChange={(value) => setValues({ ...values, icon: value })} /><EditorField label="Group name" value={values.label} onChange={(value) => setValues({ ...values, label: value })} /><EditorField label="Skills (comma separated)" value={values.skills} onChange={(value) => setValues({ ...values, skills: value })} multiline /><EditorActions saving={saving} error={error} onCancel={onCancel} onSave={submit} /></article>;
+  return <article className="admin-collection-card admin-editor-card"><h3>Edit skill group</h3><div className="admin-fixed-icon"><span>Icon</span><strong>{values.icon}</strong></div><EditorField label="Group name" value={values.label} onChange={(value) => setValues({ ...values, label: value })} /><EditorField label="Skills (comma separated)" value={values.skills} onChange={(value) => setValues({ ...values, skills: value })} multiline /><EditorActions saving={saving} error={error} onCancel={onCancel} onSave={submit} /></article>;
 }
 
 function EditorActions({ saving, error, onCancel, onSave }: { saving: boolean; error: string; onCancel: () => void; onSave: () => void }) {

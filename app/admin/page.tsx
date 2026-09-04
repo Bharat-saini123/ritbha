@@ -13,11 +13,12 @@ export default async function AdminPage() {
     return <AdminLogin />;
   }
 
-  const [messages, services, portfolio, testimonials, categories] = await Promise.all([
+  const [messages, services, portfolio, testimonials, reviews, categories] = await Promise.all([
     prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.service.findMany({ orderBy: { order: "asc" } }),
     prisma.portfolioItem.findMany({ orderBy: { order: "asc" } }),
     prisma.testimonial.findMany({ orderBy: { order: "asc" } }),
+    prisma.review.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.skillCategory.findMany({ orderBy: { order: "asc" }, include: { skills: true } }),
   ]);
 
@@ -30,7 +31,18 @@ export default async function AdminPage() {
         })),
         services,
         portfolio,
-        testimonials,
+        testimonials: [
+          ...testimonials.map((testimonial) => ({ ...testimonial, source: "testimonial" as const })),
+          ...reviews.map((review) => ({
+            id: review.id,
+            name: review.name,
+            role: "Verified reviewer",
+            company: "Google account",
+            quote: review.comment,
+            isVisible: review.isVisible,
+            source: "review" as const,
+          })),
+        ],
         categories,
       }}
     />

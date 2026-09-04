@@ -38,7 +38,24 @@ export async function PATCH(request: NextRequest) {
         data: { isVisible: Boolean(body.isVisible) },
       });
       revalidatePath("/");
-      return NextResponse.json({ item });
+      return NextResponse.json({ item: { ...item, source: "testimonial" as const } });
+    }
+
+    if (body.type === "review") {
+      const item = await prisma.review.update({
+        where: { id: body.id },
+        data: { isVisible: Boolean(body.isVisible) },
+      });
+      revalidatePath("/");
+      return NextResponse.json({ item: {
+        id: item.id,
+        name: item.name,
+        role: "Verified reviewer",
+        company: "Google account",
+        quote: item.comment,
+        isVisible: item.isVisible,
+        source: "review" as const,
+      } });
     }
 
     if (body.type === "category") {
