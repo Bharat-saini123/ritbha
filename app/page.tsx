@@ -14,6 +14,8 @@ import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 // This is an async React Server Component — it fetches live data from
 // Postgres (via Prisma) at request time and passes it down as props.
 // Static content (brand, about, team, experience, etc.) lives in lib/data.ts

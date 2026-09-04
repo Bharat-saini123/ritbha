@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { adminCookieName, isValidAdminSession } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
@@ -27,6 +28,7 @@ export async function PATCH(request: NextRequest) {
           liveUrl: body.liveUrl || null,
         },
       });
+      revalidatePath("/");
       return NextResponse.json({ item });
     }
 
@@ -35,6 +37,7 @@ export async function PATCH(request: NextRequest) {
         where: { id: body.id },
         data: { isVisible: Boolean(body.isVisible) },
       });
+      revalidatePath("/");
       return NextResponse.json({ item });
     }
 
@@ -48,6 +51,7 @@ export async function PATCH(request: NextRequest) {
         await transaction.skill.createMany({ data: skills.map((name: string) => ({ name: name.trim(), categoryId: body.id })) });
         return transaction.skillCategory.findUnique({ where: { id: body.id }, include: { skills: true } });
       });
+      revalidatePath("/");
       return NextResponse.json({ item });
     }
 
